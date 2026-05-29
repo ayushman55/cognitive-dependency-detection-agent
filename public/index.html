@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        Cognitive Dependency Detection Agent
+    </title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #eef2ff;
+        }
+
+        .container {
+
+            max-width: 1100px;
+
+            margin: 30px auto;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 30px;
+
+            box-shadow: 0px 0px 20px rgba(0,0,0,0.1);
+
+        }
+
+        h1 {
+
+            text-align: center;
+
+            color: #1e293b;
+
+            margin-bottom: 10px;
+
+        }
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #555;
+
+            margin-bottom: 30px;
+
+        }
+
+        button {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            margin-top: 15px;
+
+        }
+
+        button:hover {
+
+            background: #1d4ed8;
+
+        }
+
+        textarea {
+
+            width: 100%;
+
+            height: 180px;
+
+            padding: 15px;
+
+            margin-top: 20px;
+
+            border-radius: 10px;
+
+            border: 1px solid #ccc;
+
+            font-size: 16px;
+
+            resize: vertical;
+
+        }
+
+        select {
+
+            width: 100%;
+
+            padding: 12px;
+
+            margin-top: 15px;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+        }
+
+        .task-box {
+
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-top: 20px;
+
+            border-left: 6px solid #2563eb;
+
+        }
+
+        .dashboard {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+            gap: 20px;
+
+            margin-top: 30px;
+
+        }
+
+        .card {
+
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.05);
+
+        }
+
+        .card h3 {
+
+            margin-top: 0;
+
+            color: #1e293b;
+
+        }
+
+        .score {
+
+            font-size: 32px;
+
+            font-weight: bold;
+
+            margin-top: 10px;
+
+        }
+
+        .progress {
+
+            width: 100%;
+
+            background: #ddd;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin-top: 10px;
+
+            height: 20px;
+
+        }
+
+        .progress-bar {
+
+            height: 100%;
+
+            width: 0%;
+
+            background: #2563eb;
+
+            transition: width 0.5s;
+
+        }
+
+        .result-section {
+
+            margin-top: 30px;
+
+        }
+
+        .analysis-box {
+
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            margin-top: 20px;
+
+            line-height: 1.7;
+
+        }
+
+        canvas {
+
+            margin-top: 20px;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>
+            Cognitive Dependency Detection Agent
+        </h1>
+
+        <div class="subtitle">
+            AI-powered cognitive reasoning and dependency analysis system
+        </div>
+
+        <button onclick="generateTask()">
+            Generate Cognitive Task
+        </button>
+
+        <div class="task-box" id="taskBox">
+            Your cognitive task will appear here...
+        </div>
+
+        <textarea
+            id="answer"
+            placeholder="Write your answer here..."
+        ></textarea>
+
+        <select id="usedAI">
+
+            <option value="Yes">
+                Yes, I used AI help
+            </option>
+
+            <option value="No">
+                No, I solved independently
+            </option>
+
+        </select>
+
+        <button onclick="analyzeAnswer()">
+            Analyze Cognitive Dependency
+        </button>
+
+        <!-- DASHBOARD -->
+
+        <div class="dashboard">
+
+            <div class="card">
+
+                <h3>Reasoning Score</h3>
+
+                <div class="score"
+                     id="reasoningScore">
+                    0
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar"
+                         id="reasoningBar"></div>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Dependency Score</h3>
+
+                <div class="score"
+                     id="dependencyScore">
+                    0
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar"
+                         id="dependencyBar"></div>
+                </div>
+
+            </div>
+
+            <div class="card">
+
+                <h3>Risk Level</h3>
+
+                <div class="score"
+                     id="riskLevel">
+                    Low
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CHART -->
+
+        <canvas id="scoreChart"></canvas>
+
+        <!-- ANALYSIS -->
+
+        <div class="result-section">
+
+            <div class="analysis-box">
+
+                <h3>Independent Thinking</h3>
+
+                <div id="independentThinking">
+                    Analysis will appear here...
+                </div>
+
+            </div>
+
+            <div class="analysis-box">
+
+                <h3>Summary</h3>
+
+                <div id="summary">
+                    Summary will appear here...
+                </div>
+
+            </div>
+
+            <div class="analysis-box">
+
+                <h3>Improvement Suggestions</h3>
+
+                <div id="improvement">
+                    Suggestions will appear here...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        let chart;
+
+        // =====================================
+        // GENERATE TASK
+        // =====================================
+
+        async function generateTask() {
+
+            const taskBox =
+                document.getElementById('taskBox');
+
+            taskBox.innerHTML =
+                "Generating cognitive task...";
+
+            try {
+
+                const response =
+                    await fetch('/task');
+
+                const data =
+                    await response.json();
+
+                taskBox.innerHTML = `
+                    <strong>Cognitive Task:</strong>
+                    <br><br>
+                    ${data.task}
+                `;
+
+            } catch (error) {
+
+                taskBox.innerHTML =
+                    "Failed to generate task.";
+
+            }
+
+        }
+
+        // =====================================
+        // ANALYZE ANSWER
+        // =====================================
+
+        async function analyzeAnswer() {
+
+            const answer =
+                document.getElementById('answer').value;
+
+            const usedAI =
+                document.getElementById('usedAI').value;
+
+            try {
+
+                const response =
+                    await fetch('/analyze', {
+
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            userAnswer: answer,
+                            usedAI: usedAI
+                        })
+
+                    });
+
+                const data =
+                    await response.json();
+
+                // =====================================
+                // UPDATE SCORES
+                // =====================================
+
+                document.getElementById(
+                    'reasoningScore'
+                ).innerText =
+                    data.reasoningScore;
+
+                document.getElementById(
+                    'dependencyScore'
+                ).innerText =
+                    data.dependencyScore;
+
+                document.getElementById(
+                    'riskLevel'
+                ).innerText =
+                    data.riskLevel;
+
+                // =====================================
+                // UPDATE PROGRESS BARS
+                // =====================================
+
+                document.getElementById(
+                    'reasoningBar'
+                ).style.width =
+                    data.reasoningScore + '%';
+
+                document.getElementById(
+                    'dependencyBar'
+                ).style.width =
+                    data.dependencyScore + '%';
+
+                // =====================================
+                // UPDATE ANALYSIS
+                // =====================================
+
+                document.getElementById(
+                    'independentThinking'
+                ).innerText =
+                    data.independentThinking;
+
+                document.getElementById(
+                    'summary'
+                ).innerText =
+                    data.summary;
+
+                document.getElementById(
+                    'improvement'
+                ).innerText =
+                    data.improvement;
+
+                // =====================================
+                // UPDATE CHART
+                // =====================================
+
+                const ctx =
+                    document.getElementById(
+                        'scoreChart'
+                    );
+
+                if (chart) {
+                    chart.destroy();
+                }
+
+                chart = new Chart(ctx, {
+
+                    type: 'bar',
+
+                    data: {
+
+                        labels: [
+                            'Reasoning',
+                            'Dependency'
+                        ],
+
+                        datasets: [{
+
+                            label: 'Scores',
+
+                            data: [
+                                data.reasoningScore,
+                                data.dependencyScore
+                            ]
+
+                        }]
+
+                    }
+
+                });
+
+            } catch (error) {
+
+                console.log(error);
+
+                alert(
+                    'Failed to analyze response'
+                );
+
+            }
+
+        }
+
+    </script>
+
+</body>
+
+</html>

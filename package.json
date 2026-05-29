@@ -1,0 +1,25 @@
+{
+  "name": "ai-agents-aisdk-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "author": "",
+  "scripts": {
+    "dev": "tsx watch src/app.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.14",
+    "ai": "^5.0.44",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "type": "module"
+}
